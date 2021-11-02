@@ -272,7 +272,7 @@ public class ClassEncryptPlugin extends BaseMojo {
                 newJarFileOutStream.write(encryptData);
 
                 //加入类名md5
-                encryptedClassesList.append(JniHelper.md5("CLS_"+name)).append("\n");
+                encryptedClassesList.append(JniHelper.md5("CLS_" + name)).append("\n");
 
                 //旧文件清空方法
                 fileContent = processMethodBody(fileContent, name, true, false);
@@ -363,6 +363,9 @@ public class ClassEncryptPlugin extends BaseMojo {
 
         if (copyNativeLib && StringUtils.hasText(copyNativeLibToDir)) {
 
+            JniHelper.copyResToFile(getClass().getClassLoader(), "shell/startup.sh", mavenProject.getBuild().getDirectory() + "/startup.sh");
+            JniHelper.copyResToFile(getClass().getClassLoader(), "shell/shutdown.sh", mavenProject.getBuild().getDirectory() + "/shutdown.sh");
+
             String[] nativeLibs = {
                     "lib/HookAgent/linux/libHookAgent.so",
                     "lib/HookAgent/macosx/libHookAgent.dylib",
@@ -370,7 +373,6 @@ public class ClassEncryptPlugin extends BaseMojo {
             };
 
             for (String nativeLib : nativeLibs) {
-
 
                 byte[] data = JniHelper.loadResource(getClass().getClassLoader(), nativeLib);
 
@@ -385,6 +387,7 @@ public class ClassEncryptPlugin extends BaseMojo {
 
                 getLog().info("copy native lib " + nativeLib + " --> " + outFile + " " + ok);
             }
+
         }
     }
 
